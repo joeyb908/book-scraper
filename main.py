@@ -42,12 +42,29 @@ for chapter in chapters:
     published_date = chapter.find('time').get_text()
     # pp.pprint(published_date)
 
+# finds the rating and total rates of the book
+rating = soup.find(property='ratingValue').attrs['content']
+rate_count = soup.find(property='ratingCount').attrs['content']
+
+# find total views, followers, favorites, and pages
+stats = soup.select('.stats-content > :last-child > ul > :nth-child(even)')
+views = stats[0].get_text()
+followers = stats[2].get_text()
+favorites = stats[3].get_text()
+pages = stats[5].get_text()
+
 book_info = {
     'title': title,
     'author': author,
-    'chapter': chapter_list,
     'tags': tags,
-
+    'pages': pages,
+    'chapter': chapter_list,
+    'chapter_count': len(chapter_list),
+    'favorites': favorites,
+    'rating': rating,
+    'views': views,
+    'followers': followers,
+    'total_rates': rate_count,
 }
 
 pp.pprint(book_info)
