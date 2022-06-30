@@ -120,15 +120,8 @@ def create_book_info(book_info, book_link):
 book_info = create_book_info(book_info, 'https://www.royalroad.com/fiction/36735/the-perfect-run')
 book_info = create_book_info(book_info, 'https://www.royalroad.com/fiction/21220/mother-of-learning')
 book_info = create_book_info(book_info, 'https://www.royalroad.com/fiction/39408/beware-of-chicken')
-# pp.pprint(book_info)
 
-
-# title = book_info[0]['title'].replace(' ', '%').lower()
-# print(title)
-# # pp.pprint(book_info)
-
-
-# flask app creation in debug mode
+# Flask app creation in debug mode
 app = Flask(__name__)
 app.config['DEBUG'] = True
 
@@ -142,6 +135,7 @@ def api_base():
 
 @app.route('/api/v1/books/all')
 def api_all():
+    # Provide JSON for all of the scraped books
     return jsonify(book_info)
 
 
