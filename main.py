@@ -60,11 +60,11 @@ book_info = {
     'pages': pages,
     'chapter': chapter_list,
     'chapter_count': len(chapter_list),
-    'favorites': favorites,
     'rating': rating,
-    'views': views,
-    'followers': followers,
     'total_rates': rate_count,
+    'views': views,
+    'favorites': favorites,
+    'followers': followers,
 }
 
 pp.pprint(book_info)
