@@ -96,7 +96,7 @@ def return_single_book():
     # Create an empty results tag that will be unmodified if a book is not found
     results = []
 
-    # Grab the searched title from the parameters and format it so it will match a found book if one exists
+    # Grab the searched title from the parameters and format it, so it will match a found book if one exists
     title = str(request.args['title']).replace('%20', ' ').lower()
 
     # Loop through the data and match results that fit the requested title.
@@ -114,10 +114,10 @@ def return_single_book():
 def search_for_book():
     """Searches https://www.royalroad.com/ for entered book"""
 
-    URL = f'https://www.royalroad.com/fictions/search?title={request.args["title"]}'
+    url = f'https://www.royalroad.com/fictions/search?title={request.args["title"]}'
 
     # Pulls the link for the book's page
-    soup = create_soup(URL)
+    soup = create_soup(url)
     book_link = soup.find(class_='fiction-title')
     book_link = book_link.find(href=True)
     book_link = f'https://www.royalroad.com{book_link["href"]}'
