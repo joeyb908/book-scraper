@@ -1,5 +1,13 @@
 # Book Scraping Project For API and DB Practice
 
+## Description
+
+This is a prototype project to get more experience in working with and developing
+an API as well as serve as an introduction to working with databases. The end goal
+of this project is to create a simple webserver that can be used by others to search 
+for a book from https://www.royalroad.com to pull information such as total views, 
+ratings, tags, and more.
+
 ## Setup
 
 setup.py will install the dependencies. It will install the following:
@@ -29,3 +37,18 @@ setup.py will install the dependencies. It will install the following:
 
 ***
 
+## Directions
+
+After installing the dependencies:
+1. Run main.py
+2. Open up a web browser and navigate to http://127.0.0.1:5000 
+3. To search for a book, adjust the url to include the routing path to the actual
+search. http://127.0.0.1:5000/api/v1/books?title=
+4. Include the name of the book you want to search for after the title parameter:
+
+
+Import things to know:
+1. Do **NOT** format the title parameter. The script will handle formatting for you.
+Include spaces as you would a normal search on Google.
+2. Apostrophes will cause the program to throw an error. This will be fixed in the
+future but is not a priority at this point in time.
