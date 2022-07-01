@@ -44,7 +44,7 @@ search. http://127.0.0.1:5000/api/v1/books?title=
 4. Include the name of the book you want to search for after the title parameter:
 
 
-Import things to know:
+## Import things to know before using:
 1. Do **NOT** format the title parameter. The script will handle formatting for you.
 Include spaces as you would a normal search on Google.
 2. Apostrophes will cause the program to throw an error. This will be fixed in the
