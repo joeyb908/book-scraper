@@ -1,5 +1,5 @@
 <h2>Book Scraping Project For API and DB Practice</h2>
-
+***
 <h3>Setup</h3>
 
 1. Create a virtual environment
@@ -14,3 +14,5 @@
 
 3. Navigate to setup.py
    1. <pre><code>$ cd ~/projectdirectory/setup/<br />$ pip install . </code></pre>
+
+***
