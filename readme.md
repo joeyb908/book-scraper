@@ -3,10 +3,10 @@
 ## Description
 
 This is a prototype project to get more experience in working with and developing
-an API as well as serve as an introduction to working with databases. The end goal
-of this project is to create a simple webserver that can be used by others to search 
-for a book from https://www.royalroad.com to pull information such as total views, 
-ratings, tags, and more.
+an API as well as serve as an introduction to working with webservers and databases. 
+The end goal of this project is to create a simple webserver that can be used by others
+to search for a book from https://www.royalroad.com to pull information such as total 
+views, ratings, tags, and more.
 
 ## Setup
 
