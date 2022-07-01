@@ -34,9 +34,6 @@ setup.py will install the dependencies. It will install the following:
       pip install .
       ```
 
-
-***
-
 ## Directions
 
 After installing the dependencies:
