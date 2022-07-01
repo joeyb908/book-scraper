@@ -119,7 +119,10 @@ def search_for_book():
     # Pulls the link for the book's page
     soup = create_soup(url)
     book_link = soup.find(class_='fiction-title')
-    book_link = book_link.find(href=True)
+    try:
+        book_link = book_link.find(href=True)
+    except AttributeError:
+        return []
     book_link = f'https://www.royalroad.com{book_link["href"]}'
 
     create_book_info(book_link)
