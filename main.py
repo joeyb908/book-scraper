@@ -107,9 +107,7 @@ def create_book_info(book_link):
         'views': list_of_stats[2],
         'favorites': list_of_stats[4],
         'followers': list_of_stats[3],
-    }
-    )
-    # return book_info
+    })
 
 
 def return_single_book():
