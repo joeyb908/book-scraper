@@ -13,4 +13,4 @@
 
 
 3. Navigate to setup.py
-   1. <pre><code>$ cd ~/projectdirectory/setup/<br>$ pip install . </code></pre>
+   1. <pre><code>$ cd ~/projectdirectory/setup/<br/>$ pip install . </code></pre>
