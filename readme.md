@@ -1,8 +1,7 @@
 A small book scraping project to get some experience working with APIs.
 
-Package requirements to be installed:
+Use:
 
-- BeautifulSoup4 - pip install beautifulsoup4
-- lxml - pip install lxml
-- requests - pip install requests
-- Flask - pip install Flask
+pip install .
+
+to install dependencies with setup.py within the project directory.
