@@ -12,7 +12,7 @@
       $ <venv>\Scripts\activate.bat 
       ```
 
-3. Navigate to setup.py
+3. Navigate to setup.py and install dependencies
    1. ```bash
       $ cd ~/projectdirectory/setup/
       $ pip install .
