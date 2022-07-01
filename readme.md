@@ -2,8 +2,7 @@
 
 ## Setup
 
-The setup will install the dependencies necessary for the program to run. It will
-install the following:
+setup.py will install the dependencies. It will install the following:
 1. Flask
 2. lxml
 3. requests
