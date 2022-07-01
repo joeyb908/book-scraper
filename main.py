@@ -4,7 +4,7 @@ import requests
 import pprint
 from flask import Flask, jsonify, request
 
-pp = pprint.PrettyPrinter(indent=4, compact=True)
+# pp = pprint.PrettyPrinter(indent=4, compact=True)
 BASE_URL = 'https://www.royalroad.com/'
 book_info = []
 
