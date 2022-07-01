@@ -1,8 +1,5 @@
 # Book Scraping Project For API and DB Practice
 
-___
-
-
 ## Setup
 
 1. Create a virtual environment 
