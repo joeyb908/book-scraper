@@ -12,8 +12,8 @@ ___
       
 2. Activate your virtual environment
    1. ```bash
-         $ <venv>\Scripts\activate.bat 
-         ```
+      $ <venv>\Scripts\activate.bat 
+      ```
 
 3. Navigate to setup.py
    1. ```bash
