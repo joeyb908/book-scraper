@@ -13,7 +13,7 @@
 
 
 3. Navigate to setup.py
-   1. <pre><code>$ cd ~/projectdirectory/setup/
-$ pip install . </code></pre>
+   <pre><code>$ cd ~/projectdirectory/setup/</code></pre>
+   <pre><code>$ pip install . </code></pre>
 
 ***
