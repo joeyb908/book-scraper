@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='book-scraper',
-      version='.1',
+      version='0.1',
       description='A prototype book-scraper',
       url='https://github.com/joeyb908/book-scraper',
       author='joeyb908',
