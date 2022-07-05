@@ -138,6 +138,12 @@ def search_for_book():
     return return_single_book()
 
 
+def enable_CORS(json):
+    """Enables cross-origin resource sharing (CORS) to requests"""
+    response = json
+    response.headers.add('Access-Control-Allow-Origin', 'localhost')
+    return response
+
 # Flask app creation in debug mode
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -153,7 +159,8 @@ def api_base():
 @app.route('/api/v1/books/all')
 def api_all():
     # Provide JSON for all the scraped books
-    return jsonify(book_info)
+    book_data = enable_CORS(jsonify(book_info))
+    return book_data
 
 
 # set routing for title of book
@@ -175,7 +182,8 @@ def api_book():
     else:
         return "Error: No title field provided. Please specify a title."
 
-    return jsonify(results)
+    book_data = enable_CORS(jsonify(book_info))
+    return book_data
 
 
 if __name__ == '__main__':
