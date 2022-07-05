@@ -22,7 +22,12 @@ def find_title(soup):
 
 def find_author(soup):
     """Finds the author using selectors"""
-    return soup.select_one('.col > h4 > :last-child > a').get_text()
+
+    # worked but ran into issues when col did not exist on the page (was a div tag instead)
+    # return soup.select_one('.col > h4 > :last-child > a').get_text()
+    author = soup.find(property='author').get_text().strip('\n')
+    head, sep, tail = author.partition('\n\n')
+    return tail
 
 
 def find_tags(soup):
@@ -138,11 +143,12 @@ def search_for_book():
     return return_single_book()
 
 
-def enable_CORS(json):
+def enable_cors(json):
     """Enables cross-origin resource sharing (CORS) to requests"""
     response = json
     response.headers.add('Access-Control-Allow-Origin', 'localhost')
     return response
+
 
 # Flask app creation in debug mode
 app = Flask(__name__)
@@ -159,7 +165,7 @@ def api_base():
 @app.route('/api/v1/books/all')
 def api_all():
     # Provide JSON for all the scraped books
-    book_data = enable_CORS(jsonify(book_info))
+    book_data = enable_cors(jsonify(book_info))
     return book_data
 
 
@@ -177,13 +183,34 @@ def api_book():
         if not results:
             results = search_for_book()
             if not results:
-                return "Error: Book could not be found. Please try another search."
+                return 'Error: Book not found'
 
     else:
         return "Error: No title field provided. Please specify a title."
 
-    book_data = enable_CORS(jsonify(book_info))
+    book_data = enable_cors(jsonify(results))
     return book_data
+
+
+@app.route('/pull_top')
+def top_books_on_site():
+    top_rated_and_more_links = ['https://www.royalroad.com/fictions/best-rated',
+                                'https://www.royalroad.com/fictions/active-popular',
+                                'https://www.royalroad.com/fictions/weekly-popular',
+                                'https://www.royalroad.com/fictions/rising-stars',
+                                'https://www.royalroad.com/fictions/complete']
+
+    books = []
+    # for each page on the top_rated, etc, find all the books
+    for page in top_rated_and_more_links:
+        soup = create_soup(page)
+        books = soup.find_all(class_='fiction-title')
+        for book in books:
+            book_link = f'https://www.royalroad.com{book.find(href=True)["href"]}'
+            create_book_info(book_link)
+        print(f'finished {page}')
+
+    return 'success'
 
 
 if __name__ == '__main__':
