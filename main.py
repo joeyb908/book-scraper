@@ -64,6 +64,12 @@ def find_stats(soup):
     return [rating, rate_count, views, followers, favorites, pages]
 
 
+def find_image_url(soup):
+    """Finds the link to the book's cover art"""
+    link = soup.find(property='image').attrs['src']
+    return link
+
+
 def create_book_info(book_link):
     """Creates dictionary with all relevant book information"""
 
@@ -73,9 +79,12 @@ def create_book_info(book_link):
     tags = find_tags(soup)
     chapter_list = find_chapters(soup)
     list_of_stats = find_stats(soup)
+    img_url = find_image_url(soup)
 
     book_info.append({
         'title': title,
+        'url': book_link,
+        'img_url': img_url,
         'author': author,
         'tags': tags,
         'pages': list_of_stats[-1],
