@@ -244,7 +244,7 @@ def api_base():
            '<p>A prototype web-scraping API for use with https://www.royalroad.com/</p>'
 
 
-@app.route('/api/v1/books/all')
+@app.route('/api/v1/books/resources/all')
 def api_all():
     # Provide JSON for all the scraped books
     book_data = enable_cors(jsonify(book_info))
