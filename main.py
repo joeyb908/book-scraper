@@ -2,9 +2,23 @@ from bs4 import BeautifulSoup
 import lxml
 import requests
 from flask import Flask, jsonify, request
+import time
 
 BASE_URL = 'https://www.royalroad.com/'
 book_info = []
+added_novels = []
+
+
+# def speed_calc_decorator(function):
+#     def wrapper_function():
+#         # mark the start time of the function
+#         start_time = time.time()
+#         # run the function
+#         function()
+#         # print the function name as well as the current time subtracted from the start time
+#         print(f'{function.__name__} run speed: {time.time() - start_time}')
+#
+#     return wrapper_function
 
 
 def create_soup(book_link):
@@ -78,8 +92,14 @@ def find_image_url(soup):
 def create_book_info(book_link):
     """Creates dictionary with all relevant book information"""
 
+    already_present = check_if_added(book_link)
+    if already_present:
+        return
     soup = create_soup(book_link)
     title = find_title(soup)
+    already_present = check_if_added(title)
+    if already_present:
+        return
     author = find_author(soup)
     tags = find_tags(soup)
     chapter_list = find_chapters(soup)
@@ -101,6 +121,9 @@ def create_book_info(book_link):
         'favorites': list_of_stats[4],
         'followers': list_of_stats[3],
     })
+
+    # Append book url to list of already seen book urls
+    added_novels.append(book_link)
 
 
 def return_single_book():
@@ -150,6 +173,65 @@ def enable_cors(json):
     return response
 
 
+def check_if_added(url):
+    """Checks if a book has already been added to the JSON file"""
+    if url in added_novels:
+        return True
+
+
+def whole_page_books(url):
+    """Searches the whole pages for books and adds them to the JSON file"""
+    print(f'Adding books from {url}. Hold on to your butts...')
+    i = 1
+    soup = create_soup(url)
+    books = soup.find_all(class_='fiction-title')
+    for book in books:
+        book_link = f'https://www.royalroad.com{book.find(href=True)["href"]}'
+        create_book_info(book_link)
+        if i % 5 == 0:
+            print(f'Finished book {i}/{len(books)}...')
+        i = i + 1
+
+
+def top_books_on_site():
+    """Pulls for the top books on the site"""
+    print('entered function')
+    print(request.args)
+    top_rated_and_more_links = {'best%20rated': 'https://www.royalroad.com/fictions/best-rated',
+                                'ongoing': 'https://www.royalroad.com/fictions/active-popular',
+                                'weekly%20popular': 'https://www.royalroad.com/fictions/weekly-popular',
+                                'rising%20stars': 'https://www.royalroad.com/fictions/rising-stars',
+                                'top%20completed': 'https://www.royalroad.com/fictions/complete'}
+
+    # Checks to see if the parameter has been included
+    if 'best rated' in request.args:
+        print('Beginning best rated novels...')
+        whole_page_books(top_rated_and_more_links['best%20rated'])
+        print('Completed best rated novels\n')
+    if 'ongoing' in request.args:
+        print('Beginning top current ongoing novels...')
+        whole_page_books(top_rated_and_more_links['ongoing'])
+        print('Completed top ongoing novels.\n')
+    if 'weekly popular' in request.args:
+        print('Beginning top books of the week...')
+        whole_page_books(top_rated_and_more_links['weekly%20popular'])
+        print('Completed top books of the week.\n')
+    if 'rising stars' in request.args:
+        print('Beginning top rising stars...')
+        whole_page_books(top_rated_and_more_links['rising%20stars'])
+        print('Completed top rising stars.\n')
+    if 'top completed' in request.args:
+        print('Beginning top completed novels...')
+        whole_page_books(top_rated_and_more_links['top%20completed'])
+        print('Finished top completed novels\n')
+
+    # At the end, will let user know of the duplicate URLs
+    if added_novels:
+        print('The following urls had duplicates and were not added twice:')
+        for book in added_novels:
+            print(book)
+
+
 # Flask app creation in debug mode
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -170,7 +252,7 @@ def api_all():
 
 
 # set routing for title of book
-@app.route("/api/v1/books", methods=['GET'])
+@app.route("/api/v1/resources/books", methods=['GET'])
 def api_book():
     """Returns JSON of the searched book"""
 
@@ -185,32 +267,16 @@ def api_book():
             if not results:
                 return 'Error: Book not found'
 
+    elif 'top' in request.args:
+        print('top received')
+        top_books_on_site()
+        results = book_info
+
     else:
         return "Error: No title field provided. Please specify a title."
 
     book_data = enable_cors(jsonify(results))
     return book_data
-
-
-@app.route('/pull_top')
-def top_books_on_site():
-    top_rated_and_more_links = ['https://www.royalroad.com/fictions/best-rated',
-                                'https://www.royalroad.com/fictions/active-popular',
-                                'https://www.royalroad.com/fictions/weekly-popular',
-                                'https://www.royalroad.com/fictions/rising-stars',
-                                'https://www.royalroad.com/fictions/complete']
-
-    books = []
-    # for each page on the top_rated, etc, find all the books
-    for page in top_rated_and_more_links:
-        soup = create_soup(page)
-        books = soup.find_all(class_='fiction-title')
-        for book in books:
-            book_link = f'https://www.royalroad.com{book.find(href=True)["href"]}'
-            create_book_info(book_link)
-        print(f'finished {page}')
-
-    return 'success'
 
 
 if __name__ == '__main__':
