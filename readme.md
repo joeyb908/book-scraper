@@ -43,13 +43,16 @@ After installing the dependencies:
 search. http://127.0.0.1:5000/api/v1/resources/books?title=
 4. Include the name of the book you want to search for after the title parameter:
 5. To search for books on the following pages, include the value that is associated:
-```text
-top ongoing -> ?top=True&ongoing=True
-best rated -> ?top=True&best rated=True
-top complete -> ?top=True&completed=True
-top rising stars -> ?top=True&rising stars=True
-top trending -> ?top=True&weekly popular=True
-```
+
+
+| Desired Page                   | Parameter                |
+|--------------------------------|--------------------------| 
+| top ongoing                    | ?top&ongoing=True        |
+| best rated                     | ?top&best rated=True     |
+| top complete                   | ?top&completed=True      | 
+| top rising stars               | ?top&rising stars=True   |
+| top trending                   | ?top&weekly popular=True |
+
 
 
 ## Import things to know before using:
