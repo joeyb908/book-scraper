@@ -7,6 +7,7 @@ import time
 BASE_URL = 'https://www.royalroad.com/'
 book_info = []
 added_novels = []
+duplicate_novels = []
 
 
 # def speed_calc_decorator(function):
@@ -94,6 +95,7 @@ def create_book_info(book_link):
 
     already_present = check_if_added(book_link)
     if already_present:
+        duplicate_novels.append(book_link)
         return
     soup = create_soup(book_link)
     title = find_title(soup)
@@ -226,7 +228,7 @@ def top_books_on_site():
         print('Finished top completed novels\n')
 
     # At the end, will let user know of the duplicate URLs
-    if added_novels:
+    if duplicate_novels:
         print('The following urls had duplicates and were not added twice:')
         for book in added_novels:
             print(book)
