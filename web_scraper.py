@@ -64,21 +64,21 @@ class Scraper:
             head, sep, tail = chapter.get_text().strip().partition('\n')
             link = chapter.find(href=True)
             appended_link = f'https://www.royralroad.com{link["href"]}'
-            chapter_list.append([head, appended_link])
+            chapter_list.append([str(head), str(appended_link)])
         return chapter_list
 
     def find_stats(self):
         """Finds general stats related to the book"""
 
         # Finds the rating and total rates of the book
-        rating = self.soup.find(property='ratingValue').attrs['content']
-        rate_count = self.soup.find(property='ratingCount').attrs['content']
+        rating = float(self.soup.find(property='ratingValue').attrs['content'])
+        rate_count = int(self.soup.find(property='ratingCount').attrs['content'].replace(",", "_"))
 
         stats = self.soup.select('.stats-content > :last-child > ul > :nth-child(even)')
-        views = stats[0].get_text()
-        followers = stats[2].get_text()
-        favorites = stats[3].get_text()
-        pages = stats[5].get_text()
+        views = int(stats[0].get_text().replace(",", "_"))
+        followers = int(stats[2].get_text().replace(',', "_"))
+        favorites = int(stats[3].get_text().replace(",", "_"))
+        pages = int(stats[5].get_text().replace(",", "_"))
 
         return [rating, rate_count, views, followers, favorites, pages]
 
@@ -90,40 +90,41 @@ class Scraper:
     def create_book_info(self, book_link):
         """Creates dictionary with all relevant book information"""
 
-        already_present = self.check_if_added(book_link)
-        if already_present:
-            self.duplicate_novels.append(book_link)
-            return
-        else:
-            self.create_soup(book_link)
-            title = self.find_title()
-            author = self.find_author()
-            tags = self.find_tags()
-            chapter_list = self.find_chapters()
-            list_of_stats = self.find_stats()
-            img_url = self.find_image_url()
+        # already_present = self.check_if_added(book_link)
+        # if already_present:
+        #     self.duplicate_novels.append(book_link)
+        #     return
+        # else:
+        self.create_soup(book_link)
+        title = self.find_title()
+        author = self.find_author()
+        tags = self.find_tags()
+        chapter_list = self.find_chapters()
+        list_of_stats = self.find_stats()
+        img_url = self.find_image_url()
 
-            self.book_info.append({
-                'title': title,
-                'url': book_link,
-                'img_url': img_url,
-                'author': author,
-                'tags': tags,
-                'pages': list_of_stats[-1],
-                'chapter': chapter_list,
-                'chapter_count': len(chapter_list),
-                'rating': list_of_stats[0],
-                'total_rates': list_of_stats[1],
-                'views': list_of_stats[2],
-                'favorites': list_of_stats[4],
-                'followers': list_of_stats[3],
-            })
+        self.book_info.append({
+            'title': str(title),
+            'url': str(book_link),
+            'img_url': str(img_url),
+            'author': str(author),
+            'tags': tags,
+            'pages': list_of_stats[-1],
+            'chapter': chapter_list,
+            'chapter_count': len(chapter_list),
+            'rating': list_of_stats[0],
+            'total_rates': list_of_stats[1],
+            'views': list_of_stats[2],
+            'favorites': list_of_stats[4],
+            'followers': list_of_stats[3],
+        })
 
-            # Append book url to list of already seen book urls
-            self.added_novels.append(book_link)
-            print('book added')
+        # Append book url to list of already seen book urls
+        self.added_novels.append(book_link)
+        print('book added')
 
     def return_single_book(self):
+        print('entered')
         """Returns a single book from book_info if book_info has more than one book within it. Doesn't need to return a
             value because it appends to a list that's global"""
 
@@ -134,7 +135,12 @@ class Scraper:
         # Titles should be fairly unique, but other fields might return many results
         for book in self.book_info:
             if book['title'].lower() == title:
+                print(f'book {title} appended')
                 self.results.append(book)
+                return self.results
+
+        else:
+            return self.results
 
     def search_for_book(self):
         """Searches https://www.royalroad.com/ for entered book"""
@@ -151,7 +157,7 @@ class Scraper:
         book_link = f'https://www.royalroad.com{book_link["href"]}'
 
         self.create_book_info(book_link)
-        self.return_single_book()
+        return self.return_single_book()
 
     def top_books_on_site(self):
         print('entered')
@@ -211,12 +217,13 @@ class Scraper:
             i = i + 1
 
     def scrape_title(self):
+        print('entered')
         self.results = []
         self.return_single_book()
         if not self.results:
             self.results = self.search_for_book()
             if not self.results:
-                return 'Error: Book not found'
+                return False
 
     def scrape_top(self):
         self.results = []
