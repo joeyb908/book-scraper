@@ -1,8 +1,36 @@
+import sqlalchemy
 from bs4 import BeautifulSoup
 import lxml
 import requests
 from flask import Flask, jsonify, request
 import time
+import database_setup as db
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy import table, column, select
+
+
+def check_if_added(url):
+    db_item_location = None
+    """Checks if a book has already been added to the JSON file"""
+    Session = sessionmaker(bind=db.engine)
+    session = Session()
+
+    # Queries the URL column in the database to see if the URL exists
+    query = select([db.Book.url]).where(db.Book.url == url)
+    result = session.execute(query).fetchall()[0][0]
+
+    if result:
+        return True
+
+
+def grab_duplicate_from_db(url):
+    Session = sessionmaker(bind=db.engine)
+    session = Session()
+
+    # Grab URL in database that already exists
+    query = select([db.Book]).where(db.Book.url == url)
+    result = session.execute(query).fetchall()[0][0]
+    return result.serialize()
 
 
 class Scraper:
@@ -89,39 +117,39 @@ class Scraper:
 
     def create_book_info(self, book_link):
         """Creates dictionary with all relevant book information"""
+        try:
+            check_if_added(book_link)
+        except IndexError:
+            self.create_soup(book_link)
+            title = self.find_title()
+            author = self.find_author()
+            tags = self.find_tags()
+            chapter_list = self.find_chapters()
+            list_of_stats = self.find_stats()
+            img_url = self.find_image_url()
 
-        # already_present = self.check_if_added(book_link)
-        # if already_present:
-        #     self.duplicate_novels.append(book_link)
-        #     return
-        # else:
-        self.create_soup(book_link)
-        title = self.find_title()
-        author = self.find_author()
-        tags = self.find_tags()
-        chapter_list = self.find_chapters()
-        list_of_stats = self.find_stats()
-        img_url = self.find_image_url()
+            self.book_info.append({
+                'title': str(title),
+                'url': str(book_link),
+                'img_url': str(img_url),
+                'author': str(author),
+                'tags': tags,
+                'pages': list_of_stats[-1],
+                'chapter': chapter_list,
+                'chapter_count': len(chapter_list),
+                'rating': list_of_stats[0],
+                'total_rates': list_of_stats[1],
+                'views': list_of_stats[2],
+                'favorites': list_of_stats[4],
+                'followers': list_of_stats[3],
+            })
 
-        self.book_info.append({
-            'title': str(title),
-            'url': str(book_link),
-            'img_url': str(img_url),
-            'author': str(author),
-            'tags': tags,
-            'pages': list_of_stats[-1],
-            'chapter': chapter_list,
-            'chapter_count': len(chapter_list),
-            'rating': list_of_stats[0],
-            'total_rates': list_of_stats[1],
-            'views': list_of_stats[2],
-            'favorites': list_of_stats[4],
-            'followers': list_of_stats[3],
-        })
-
-        # Append book url to list of already seen book urls
-        self.added_novels.append(book_link)
-        print('book added')
+            # Append book url to list of already seen book urls
+            self.added_novels.append(book_link)
+            print('book added')
+        else:
+            self.book_info.append(grab_duplicate_from_db(book_link))
+            return
 
     def return_single_book(self):
         print('entered')
@@ -196,11 +224,6 @@ class Scraper:
             print('The following urls had duplicates and were not added twice:')
             for book in self.duplicate_novels:
                 print(book)
-
-    def check_if_added(self, url):
-        """Checks if a book has already been added to the JSON file"""
-        if url in self.added_novels:
-            return True
 
     def whole_page_books(self, url):
         """Searches the whole pages for books and adds them to the JSON file"""
