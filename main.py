@@ -98,7 +98,6 @@ def api_book():
                 session.close()
 
     elif 'top' in request.args:
-        print('entered')
         scraper.scrape_top()
 
         for book in range(0, len(scraper.book_info)):
@@ -108,7 +107,6 @@ def api_book():
 
             # If duplicate, stop adding to the database
             except TypeError:
-                print('Pulling from the database due to duplicate!')
                 session.close()
 
             # If successful, add to database
