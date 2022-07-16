@@ -47,11 +47,11 @@ search. http://127.0.0.1:5000/api/v1/resources/books?title=
 
 | Desired Page                   | Parameter                |
 |--------------------------------|--------------------------| 
-| top ongoing                    | ?top&ongoing=True        |
-| best rated                     | ?top&best rated=True     |
-| top complete                   | ?top&completed=True      | 
-| top rising stars               | ?top&rising stars=True   |
-| top trending                   | ?top&weekly popular=True |
+| top ongoing                    | ?top&ongoing             |
+| best rated                     | ?top&best rated          |
+| top complete                   | ?top&completed           | 
+| top rising stars               | ?top&rising stars        |
+| top trending                   | ?top&weekly popular      |
 
 
 
