@@ -125,7 +125,7 @@ def api_book():
                 finally:
                     session.close()
 
-    if not scraper.results:
+    if not scraper.book_info:
         return "Error: No title field provided. Please specify a title."
 
     book_data = enable_cors(jsonify(scraper.book_info))
