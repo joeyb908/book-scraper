@@ -16,6 +16,7 @@ def check_if_added(url):
     # Queries the URL column in the database to see if the URL exists
     query = select([db.Book.url]).where(db.Book.url == url)
     result = session.execute(query).fetchall()[0][0]
+    session.close()
 
     if result:
         return True
@@ -28,6 +29,7 @@ def grab_duplicate_from_db(url):
     # Grab URL in database that already exists
     query = select([db.Book]).where(db.Book.url == url)
     result = session.execute(query).fetchall()[0][0]
+    session.close()
     return result.serialize()
 
 
@@ -230,7 +232,6 @@ class Scraper:
         self.create_soup(url)
         books = self.soup.find_all(class_='fiction-title')
         for book in books:
-            print('yes')
             book_link = f'https://www.royalroad.com{book.find(href=True)["href"]}'
             self.create_book_info(book_link)
             if i % 5 == 0:
@@ -238,7 +239,6 @@ class Scraper:
             i = i + 1
 
     def scrape_title(self):
-        print('entered')
         self.results = []
         self.return_single_book()
         if not self.results:
