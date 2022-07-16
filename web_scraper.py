@@ -1,9 +1,7 @@
-import sqlalchemy
 from bs4 import BeautifulSoup
 import lxml
 import requests
-from flask import Flask, jsonify, request
-import time
+from flask import request
 import database_setup as db
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import table, column, select
@@ -43,17 +41,6 @@ class Scraper:
         self.results = []
         self.soup = None
 
-    # def speed_calc_decorator(function):
-    #     def wrapper_function():
-    #         # mark the start time of the function
-    #         start_time = time.time()
-    #         # run the function
-    #         function()
-    #         # print the function name as well as the current time subtracted from the start time
-    #         print(f'{function.__name__} run speed: {time.time() - start_time}')
-    #
-    #     return wrapper_function
-
     def create_soup(self, book_link):
         """Creates Soup to be able to parse webpage"""
         url = book_link
@@ -68,8 +55,10 @@ class Scraper:
     def find_author(self):
         """Finds the author using selectors"""
 
-        # worked but ran into issues when col did not exist on the page (was a div tag instead)
+        # Worked but ran into issues when col did not exist on the page (was a div tag instead)
         # return soup.select_one('.col > h4 > :last-child > a').get_text()
+
+        # Finds the author, then separates everything from the right-half of the first '\n' to the tail
         author = self.soup.find(property='author').get_text().strip('\n')
         head, sep, tail = author.partition('\n\n')
         return tail
@@ -79,6 +68,9 @@ class Scraper:
 
         found_tags = self.soup.findAll(class_='tags')
         tags = [(tag.get_text().strip('\n').splitlines()) for tag in found_tags]
+
+        # Unpacks the returns tags because they're in a nested empty list
+        # i.e, [[fiction, fantasy]] instead of [fiction, fantasy]
         [tags] = tags
         return tags
 
@@ -117,8 +109,12 @@ class Scraper:
 
     def create_book_info(self, book_link):
         """Creates dictionary with all relevant book information"""
+
+        # Checks if the book is already in the database
         try:
             check_if_added(book_link)
+
+        # If it's not, added it
         except IndexError:
             self.create_soup(book_link)
             title = self.find_title()
@@ -147,6 +143,8 @@ class Scraper:
             # Append book url to list of already seen book urls
             self.added_novels.append(book_link)
             print('book added')
+
+        # If book is in the database, append it the book_info
         else:
             self.book_info.append(grab_duplicate_from_db(book_link))
             return
