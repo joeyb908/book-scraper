@@ -40,13 +40,14 @@ After installing the dependencies:
 1. Run main.py
 2. Open up a web browser and navigate to http://127.0.0.1:5000 
 3. To search for a book, adjust the url to include the routing path to the actual
-search. http://127.0.0.1:5000/api/v1/resources/books?title=
+search. http://127.0.0.1:5000/api/v1/resources/books
 4. Include the name of the book you want to search for after the title parameter:
 5. To search for books on the following pages, include the value that is associated:
 
 
 | Desired Page                   | Parameter                |
 |--------------------------------|--------------------------| 
+| specific book                  | ?title=book-name         |
 | top ongoing                    | ?top&ongoing             |
 | best rated                     | ?top&best rated          |
 | top complete                   | ?top&completed           | 
