@@ -4,7 +4,7 @@ import requests
 from flask import request
 import database_setup as db
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy import table, column, select
+from sqlalchemy import table, column, select, update
 
 
 def check_if_added(url):
@@ -144,7 +144,6 @@ class Scraper:
 
             # Append book url to list of already seen book urls
             self.added_novels.append(book_link)
-            print('book added')
 
         # If book is in the database, append it the book_info
         else:
@@ -249,5 +248,3 @@ class Scraper:
     def scrape_top(self):
         self.results = []
         self.top_books_on_site()
-
-
